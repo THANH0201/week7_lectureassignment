@@ -1,14 +1,14 @@
 pipeline {
     agent any
     tools{
-        maven 'Maven3'
+        maven 'maven3'
 
     }
 
     environment {
         PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
-        DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
-        DOCKER_IMAGE = 'amirdirin/javafx_with_db2'
+        DOCKERHUB_CREDENTIALS_ID = 'dockerhub'
+        DOCKER_IMAGE = 'thanh0201/javafx_with_db2'
         DOCKER_TAG = 'latest'
     }
 
@@ -16,7 +16,7 @@ pipeline {
         stage('Setup Maven') {
             steps {
                 script {
-                    def mvnHome = tool name: 'Maven3', type: 'maven'
+                    def mvnHome = tool name: 'maven3', type: 'maven'
                     env.PATH = "${mvnHome}/bin:${env.PATH}"
                 }
             }
@@ -24,7 +24,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/ADirin/javafx_with_mariadb.git'
+                git branch: 'main', url: 'https://github.com/THANH0201/week7_lectureassignment.git'
             }
         }
 
@@ -78,7 +78,7 @@ pipeline {
   post {
     always {
         junit(testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true)
-        jacoco(execPattern: '**/target/jacoco.exec', classPattern: '**/target/classes', sourcePattern: '**/src/main/java', inclusionPattern: '**/*.class', exclusionPattern: '')
+		recordCoverage tools: [[parser: 'JACOCO']]
     }
 }
 
